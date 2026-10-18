@@ -1,0 +1,26 @@
+import { Sparkle } from '@phosphor-icons/react';
+
+const LOGOS: Record<string, string> = {
+    pinecone: '/logos/pinecone.png',
+    langfuse: '/logos/langfuse.svg',
+    datahub: '/logos/datahub.svg',
+};
+
+type Props = {
+    id: string;
+    name: string;
+    small?: boolean;
+};
+
+export default function ConnectorLogo({ id, name, small = false }: Props) {
+    const src = LOGOS[id];
+    return (
+        <div className={small ? 'logo-tile small' : 'logo-tile'}>
+            {src ? (
+                <img src={src} alt={`${name} logo`} />
+            ) : (
+                <Sparkle size={small ? 16 : 22} aria-label={name} />
+            )}
+        </div>
+    );
+}

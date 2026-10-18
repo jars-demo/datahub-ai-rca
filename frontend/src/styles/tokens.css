@@ -1,0 +1,29 @@
+/* Based on DataHub's design system palette (alchemy-components/theme/foundations/colors.ts).
+   Neutral surfaces; violet is reserved for primary actions and selection. */
+:root {
+    --primary: #533fd1;
+    --primary-hover: #4c39be;
+    --primary-subtle: #f1f3fd;
+
+    --text-strong: #272d48;
+    --text: #374066;
+    --text-secondary: #5f6685;
+    --text-tertiary: #8088a3;
+
+    --border: #ebecf0;
+    --border-strong: #cfd1da;
+    --bg: #ffffff;
+    --bg-surface: #f9fafc;
+    --bg-muted: #f5f6fa;
+
+    --success: #548239;
+    --success-dot: #77b750;
+    --danger: #cd0d24;
+    --warning-dot: #eeae09;
+    --neutral-dot: #a9adbd;
+
+    --radius-sm: 6px;
+    --radius: 8px;
+
+    --font: 'Mulish', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
