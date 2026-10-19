@@ -1,5 +1,4 @@
 import asyncio
-from typing import Optional
 
 from app.agent import runner
 from app.llm.types import Completion, LLMClient, ToolCall, ToolSpec, Turn
@@ -13,13 +12,15 @@ class ScriptedLLM(LLMClient):
     model = "scripted-1"
 
     async def complete(
-        self, system: str, turns: list[Turn], tools: Optional[list[ToolSpec]] = None, max_tokens: int = 0
+        self, system: str, turns: list[Turn], tools: list[ToolSpec] | None = None, max_tokens: int = 0
     ) -> Completion:
         if turns[-1].role == "user":
             call = ToolCall(id="t1", name="quality_trend", arguments={"score_name": "correctness"})
             return Completion(text="", tool_calls=[call], stop_reason="tool_use", model=self.model)
         result = turns[-1].tool_results[0]
-        return Completion(text=f"answer from {result.content[:20]}", tool_calls=[], stop_reason="end", model=self.model)
+        return Completion(
+            text=f"answer from {result.content[:20]}", tool_calls=[], stop_reason="end", model=self.model
+        )
 
     async def list_models(self) -> list[str]:
         return [self.model]

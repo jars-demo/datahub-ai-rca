@@ -1,7 +1,7 @@
 """Every DataHub call lives here: GraphQL on GMS for reads, and the frontend login for creating
 a personal access token in a fresh quickstart."""
 
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -23,31 +23,40 @@ _ENTITY_FIELDS = """
     globalTags { tags { tag { name } } }
     domain { domain { properties { name } } }
   }
-  ... on DataProcessInstance { name }
-  ... on Container { properties { name description } platform { name } }
+  ... on DataProcessInstance { runName: name }
+  ... on Container { containerProperties: properties { name description } platform { name } }
 """
 
-_SEARCH = """
+_SEARCH = (
+    """
 query search($input: SearchAcrossEntitiesInput!) {
   searchAcrossEntities(input: $input) {
     total
     searchResults { entity { %s } }
   }
 }
-""" % _ENTITY_FIELDS
+"""
+    % _ENTITY_FIELDS
+)
 
-_ENTITY = """
+_ENTITY = (
+    """
 query entity($urn: String!) { entity(urn: $urn) { %s } }
-""" % _ENTITY_FIELDS
+"""
+    % _ENTITY_FIELDS
+)
 
-_LINEAGE = """
+_LINEAGE = (
+    """
 query lineage($input: SearchAcrossLineageInput!) {
   searchAcrossLineage(input: $input) {
     total
     searchResults { degree entity { %s } }
   }
 }
-""" % _ENTITY_FIELDS
+"""
+    % _ENTITY_FIELDS
+)
 
 _CREATE_TOKEN = """
 mutation createToken($input: CreateAccessTokenInput!) {
@@ -62,7 +71,7 @@ class DataHubError(Exception):
 
 def summarize(entity: dict[str, Any]) -> dict[str, Any]:
     """Flatten a GraphQL entity into the fields the agent and UI need."""
-    props = entity.get("properties") or {}
+    props = entity.get("properties") or entity.get("containerProperties") or {}
     editable = entity.get("editableProperties") or {}
     owners = [
         (o["owner"].get("properties") or {}).get("displayName")
@@ -74,7 +83,7 @@ def summarize(entity: dict[str, Any]) -> dict[str, Any]:
     return {
         "urn": entity["urn"],
         "type": entity.get("type"),
-        "name": props.get("name") or entity.get("name") or entity["urn"],
+        "name": props.get("name") or entity.get("name") or entity.get("runName") or entity["urn"],
         "platform": (entity.get("platform") or {}).get("name"),
         "subtypes": (entity.get("subTypes") or {}).get("typeNames") or [],
         "description": editable.get("description") or props.get("description") or "",
@@ -82,12 +91,8 @@ def summarize(entity: dict[str, Any]) -> dict[str, Any]:
         "deprecated": bool(deprecation.get("deprecated")),
         "deprecation_note": deprecation.get("note") or "",
         "tags": [t["tag"]["name"] for t in ((entity.get("globalTags") or {}).get("tags") or [])],
-        "domain": (((entity.get("domain") or {}).get("domain") or {}).get("properties") or {}).get(
-            "name"
-        ),
-        "custom_properties": {
-            p["key"]: p["value"] for p in (props.get("customProperties") or [])
-        },
+        "domain": (((entity.get("domain") or {}).get("domain") or {}).get("properties") or {}).get("name"),
+        "custom_properties": {p["key"]: p["value"] for p in (props.get("customProperties") or [])},
     }
 
 
@@ -97,7 +102,7 @@ class DataHubAPI:
         self.ui_url = ui_url.rstrip("/")
         self._headers = {"Authorization": f"Bearer {token}"} if token else {}
 
-    def entity_url(self, urn: str, entity_type: Optional[str] = None) -> str:
+    def entity_url(self, urn: str, entity_type: str | None = None) -> str:
         path = {
             "DATASET": "dataset",
             "CONTAINER": "container",
@@ -134,9 +139,7 @@ class DataHubAPI:
             raise DataHubError(f"DataHub /config returned {resp.status_code}.")
         return resp.json()
 
-    async def search(
-        self, query: str, platform: Optional[str] = None, count: int = 10
-    ) -> list[dict[str, Any]]:
+    async def search(self, query: str, platform: str | None = None, count: int = 10) -> list[dict[str, Any]]:
         search_input: dict[str, Any] = {"query": query or "*", "start": 0, "count": count}
         if platform:
             search_input["orFilters"] = [
@@ -145,7 +148,7 @@ class DataHubAPI:
         data = await self.graphql(_SEARCH, {"input": search_input})
         return [summarize(r["entity"]) for r in data["searchAcrossEntities"]["searchResults"]]
 
-    async def entity(self, urn: str) -> Optional[dict[str, Any]]:
+    async def entity(self, urn: str) -> dict[str, Any] | None:
         data = await self.graphql(_ENTITY, {"urn": urn})
         return summarize(data["entity"]) if data.get("entity") else None
 
@@ -167,9 +170,7 @@ class DataHubAPI:
             },
         )
         result = data["searchAcrossLineage"]
-        items = [
-            {**summarize(r["entity"]), "degree": r.get("degree")} for r in result["searchResults"]
-        ]
+        items = [{**summarize(r["entity"]), "degree": r.get("degree")} for r in result["searchResults"]]
         return result["total"], items
 
 
@@ -178,9 +179,7 @@ async def create_access_token(ui_url: str, username: str, password: str) -> str:
     base = ui_url.rstrip("/")
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
-            login = await client.post(
-                f"{base}/logIn", json={"username": username, "password": password}
-            )
+            login = await client.post(f"{base}/logIn", json={"username": username, "password": password})
         except httpx.HTTPError as e:
             raise DataHubError(f"Could not reach the DataHub UI at {base}: {e}") from e
         if login.status_code != 200:

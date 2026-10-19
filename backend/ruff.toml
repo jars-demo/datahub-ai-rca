@@ -1,0 +1,10 @@
+line-length = 110
+target-version = "py311"
+
+[lint]
+select = ["E", "F", "I", "B", "UP"]
+# UP031: %-formatting keeps GraphQL braces readable.
+ignore = ["E501", "UP031"]
+
+[lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends"]

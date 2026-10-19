@@ -1,10 +1,10 @@
 import time
 from abc import ABC, abstractmethod
-from typing import Literal, Optional, Union
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
-DetailValue = Union[str, int, float, bool, list[str]]
+DetailValue = str | int | float | bool | list[str]
 
 
 class FieldOption(BaseModel):
@@ -19,8 +19,8 @@ class FieldSpec(BaseModel):
     required: bool = True
     placeholder: str = ""
     help: str = ""
-    default: Optional[str] = None
-    env: Optional[str] = Field(default=None, description="Environment variable that can set it.")
+    default: str | None = None
+    env: str | None = Field(default=None, description="Environment variable that can set it.")
     options: list[FieldOption] = Field(default_factory=list)
 
 

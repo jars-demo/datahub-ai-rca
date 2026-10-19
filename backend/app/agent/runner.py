@@ -103,7 +103,7 @@ async def investigate(question: str, llm: LLMClient, ctx: ToolContext) -> AsyncI
         for call in completion.tool_calls:
             yield {"type": "tool_call", "id": call.id, "name": call.name, "arguments": call.arguments}
         outcomes = await asyncio.gather(*(_execute(ctx, c) for c in completion.tool_calls))
-        for call, (tool_result, data) in zip(completion.tool_calls, outcomes):
+        for call, (tool_result, data) in zip(completion.tool_calls, outcomes, strict=True):
             yield {
                 "type": "tool_result",
                 "id": call.id,

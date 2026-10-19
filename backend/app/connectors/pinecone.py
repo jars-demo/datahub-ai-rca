@@ -55,9 +55,7 @@ class PineconeConnector(Connector):
         details: dict[str, DetailValue] = {"indexes": names}
         index_name = values.get("index_name")
         if not index_name:
-            return CheckResult(
-                ok=True, message=f"Connected. {len(names)} index(es) found.", details=details
-            )
+            return CheckResult(ok=True, message=f"Connected. {len(names)} index(es) found.", details=details)
 
         try:
             desc = pc.describe_index(index_name)

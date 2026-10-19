@@ -8,7 +8,7 @@ changed since 2023 are confidently wrong and their correctness scores drop.
 import random
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from app.scenario import pinecone_index, prompt_name, prompt_versions, scenario, seed_questions, trace_name
@@ -37,7 +37,7 @@ def _event_id(*parts: str) -> str:
 def generate(now: datetime | None = None, seed: int = 42) -> list[SeededTrace]:
     cfg = scenario()["langfuse"]
     rng = random.Random(seed)
-    now = (now or datetime.now(timezone.utc)).replace(minute=0, second=0, microsecond=0)
+    now = (now or datetime.now(UTC)).replace(minute=0, second=0, microsecond=0)
     regression_at = now - timedelta(days=cfg["regression_days_ago"])
     namespace_by_version = {p.version: p.config["namespace"] for p in prompt_versions()}
     questions = seed_questions()
@@ -59,12 +59,8 @@ def generate(now: datetime | None = None, seed: int = 42) -> list[SeededTrace]:
                     question=q.question,
                     answer=q.archive if version == 3 else q.current,
                     scores={
-                        "correctness": round(
-                            rng.uniform(0.1, 0.35) if wrong else rng.uniform(0.84, 0.98), 2
-                        ),
-                        "helpfulness": round(
-                            rng.uniform(0.4, 0.6) if wrong else rng.uniform(0.8, 0.96), 2
-                        ),
+                        "correctness": round(rng.uniform(0.1, 0.35) if wrong else rng.uniform(0.84, 0.98), 2),
+                        "helpfulness": round(rng.uniform(0.4, 0.6) if wrong else rng.uniform(0.8, 0.96), 2),
                     },
                 )
             )

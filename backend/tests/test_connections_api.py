@@ -48,9 +48,7 @@ def test_save_does_not_persist_inherited_values(client: TestClient, store: Conne
     assert store.get("langfuse").values == {"secret_key": "sk-good"}
 
 
-def test_secrets_are_never_returned_and_blank_keeps_saved(
-    client: TestClient, store: ConnectionStore
-) -> None:
+def test_secrets_are_never_returned_and_blank_keeps_saved(client: TestClient, store: ConnectionStore) -> None:
     client.put("/api/connections/langfuse", json={"values": {"secret_key": "sk-good"}})
     view = _langfuse(client)
     assert view["values"]["secret_key"] == ""
@@ -72,9 +70,7 @@ def test_check_is_recorded_and_cleared_on_change(client: TestClient) -> None:
 
 def test_unsaved_values_are_tested_but_not_recorded(client: TestClient) -> None:
     client.put("/api/connections/langfuse", json={"values": {"secret_key": "sk-good"}})
-    result = client.post(
-        "/api/connections/langfuse/test", json={"values": {"secret_key": "sk-bad"}}
-    ).json()
+    result = client.post("/api/connections/langfuse/test", json={"values": {"secret_key": "sk-bad"}}).json()
     assert result["ok"] is False
     assert _langfuse(client)["last_check"] is None
 

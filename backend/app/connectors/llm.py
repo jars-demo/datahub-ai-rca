@@ -79,6 +79,4 @@ class LLMConnector(Connector):
                 message=f"Connected to {info.label}, but model '{client.model}' isn't available.",
                 details={**details, "available": close or models[:_MAX_LISTED]},
             )
-        return CheckResult(
-            ok=True, message=f"Connected to {info.label} · {client.model}.", details=details
-        )
+        return CheckResult(ok=True, message=f"Connected to {info.label} · {client.model}.", details=details)

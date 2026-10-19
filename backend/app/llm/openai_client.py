@@ -1,5 +1,5 @@
 import json
-from typing import Any, Optional
+from typing import Any
 
 import openai
 
@@ -26,7 +26,7 @@ _STOP_REASONS: dict[str, StopReason] = {
 class OpenAICompatibleClient(LLMClient):
     """Any provider that implements the OpenAI Chat Completions API."""
 
-    def __init__(self, provider: str, api_key: str, model: str, base_url: Optional[str]) -> None:
+    def __init__(self, provider: str, api_key: str, model: str, base_url: str | None) -> None:
         self.provider = provider
         self.model = model
         # Local servers such as Ollama ignore the key, but the SDK requires a value.
@@ -63,7 +63,7 @@ class OpenAICompatibleClient(LLMClient):
         self,
         system: str,
         turns: list[Turn],
-        tools: Optional[list[ToolSpec]] = None,
+        tools: list[ToolSpec] | None = None,
         max_tokens: int = 16000,
     ) -> Completion:
         params: dict[str, Any] = {
@@ -116,9 +116,7 @@ class OpenAICompatibleClient(LLMClient):
             tool_calls=calls,
             stop_reason=_STOP_REASONS.get(choice.finish_reason or "", "other"),
             model=response.model or self.model,
-            usage=Usage(
-                usage.prompt_tokens if usage else 0, usage.completion_tokens if usage else 0
-            ),
+            usage=Usage(usage.prompt_tokens if usage else 0, usage.completion_tokens if usage else 0),
         )
 
     async def list_models(self) -> list[str]:

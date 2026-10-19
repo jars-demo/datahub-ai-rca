@@ -13,18 +13,12 @@ INGESTION_DIR = REPO_ROOT / "ingestion"
 @dataclass(frozen=True)
 class Settings:
     state_dir: Path = field(
-        default_factory=lambda: Path(
-            os.environ.get("RCA_STATE_DIR", REPO_ROOT / "backend" / ".data")
-        )
+        default_factory=lambda: Path(os.environ.get("RCA_STATE_DIR", REPO_ROOT / "backend" / ".data"))
     )
-    env_file: Path = field(
-        default_factory=lambda: Path(os.environ.get("RCA_ENV_FILE", REPO_ROOT / ".env"))
-    )
+    env_file: Path = field(default_factory=lambda: Path(os.environ.get("RCA_ENV_FILE", REPO_ROOT / ".env")))
     cors_origins: tuple[str, ...] = field(
         default_factory=lambda: tuple(
-            os.environ.get(
-                "RCA_CORS_ORIGINS", "http://localhost:3300,http://127.0.0.1:3300"
-            ).split(",")
+            os.environ.get("RCA_CORS_ORIGINS", "http://localhost:3300,http://127.0.0.1:3300").split(",")
         )
     )
     ingestion_python: Path = field(

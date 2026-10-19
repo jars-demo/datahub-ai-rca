@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
@@ -23,7 +21,7 @@ class ConnectionView(BaseModel):
     secrets_set: list[str] = Field(description="Secret fields that have a value.")
     from_env: list[str] = Field(description="Fields whose value comes from .env.")
     configured: bool
-    last_check: Optional[CheckResult]
+    last_check: CheckResult | None
 
 
 class ValuesPayload(BaseModel):
@@ -96,7 +94,7 @@ def save_connection(
 
 @router.post("/{connector_id}/test", response_model=CheckResult)
 async def test_connection(
-    payload: Optional[ValuesPayload] = None,
+    payload: ValuesPayload | None = None,
     connector: Connector = Depends(get_connector),
     store: ConnectionStore = Depends(get_store),
 ) -> CheckResult:

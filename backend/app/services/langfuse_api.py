@@ -1,7 +1,7 @@
 """Every Langfuse call lives here (public REST API, basic auth with the project key pair)."""
 
-from datetime import datetime, timedelta, timezone
-from typing import Any, Optional
+from datetime import UTC, datetime, timedelta
+from typing import Any
 from urllib.parse import quote
 
 import httpx
@@ -12,21 +12,21 @@ class LangfuseError(Exception):
 
 
 def iso(ts: datetime) -> str:
-    return ts.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    return ts.astimezone(UTC).isoformat().replace("+00:00", "Z")
 
 
 class LangfuseAPI:
     def __init__(self, host: str, public_key: str, secret_key: str) -> None:
         self.host = host.rstrip("/")
         self._auth = (public_key, secret_key)
-        self._project_id: Optional[str] = None
+        self._project_id: str | None = None
 
     async def _request(
         self,
         method: str,
         path: str,
         *,
-        params: Optional[dict[str, Any]] = None,
+        params: dict[str, Any] | None = None,
         json: Any = None,
         allow_404: bool = False,
     ) -> Any:
@@ -65,8 +65,8 @@ class LangfuseAPI:
     # ---- prompts -------------------------------------------------------
 
     async def get_prompt(
-        self, name: str, *, version: Optional[int] = None, label: Optional[str] = None
-    ) -> Optional[dict[str, Any]]:
+        self, name: str, *, version: int | None = None, label: str | None = None
+    ) -> dict[str, Any] | None:
         params: dict[str, Any] = {}
         if version is not None:
             params["version"] = version
@@ -147,13 +147,11 @@ class LangfuseAPI:
         return items
 
     async def traces(self, name: str, days: int) -> list[dict[str, Any]]:
-        since = datetime.now(timezone.utc) - timedelta(days=days)
-        return await self._paged(
-            "/api/public/traces", {"name": name, "fromTimestamp": iso(since)}
-        )
+        since = datetime.now(UTC) - timedelta(days=days)
+        return await self._paged("/api/public/traces", {"name": name, "fromTimestamp": iso(since)})
 
     async def scores(self, name: str, days: int) -> list[dict[str, Any]]:
-        since = datetime.now(timezone.utc) - timedelta(days=days)
+        since = datetime.now(UTC) - timedelta(days=days)
         params = {"name": name, "fromTimestamp": iso(since)}
         try:
             return await self._paged("/api/public/v2/scores", params)

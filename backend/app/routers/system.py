@@ -65,4 +65,4 @@ async def status() -> dict[str, Any]:
             return "unknown"
 
     results = await asyncio.gather(*(step_status(s) for s in STEPS))
-    return {"connections": connections, "seed": dict(zip(STEPS, results))}
+    return {"connections": connections, "seed": dict(zip(STEPS, results, strict=True))}

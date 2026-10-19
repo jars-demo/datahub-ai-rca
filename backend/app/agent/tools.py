@@ -57,9 +57,23 @@ class ToolContext:
 
 
 def _with_url(ctx: ToolContext, entity: dict[str, Any]) -> dict[str, Any]:
-    keep = ("urn", "name", "platform", "subtypes", "description", "owners", "deprecated",
-            "deprecation_note", "tags", "domain", "degree")
-    return {**{k: entity[k] for k in keep if k in entity}, "url": ctx.datahub.entity_url(entity["urn"], entity.get("type"))}
+    keep = (
+        "urn",
+        "name",
+        "platform",
+        "subtypes",
+        "description",
+        "owners",
+        "deprecated",
+        "deprecation_note",
+        "tags",
+        "domain",
+        "degree",
+    )
+    return {
+        **{k: entity[k] for k in keep if k in entity},
+        "url": ctx.datahub.entity_url(entity["urn"], entity.get("type")),
+    }
 
 
 async def quality_trend(ctx: ToolContext, args: dict[str, Any]) -> Any:
@@ -131,8 +145,7 @@ async def low_scoring_examples(ctx: ToolContext, args: dict[str, Any]) -> Any:
         "max_score": threshold,
         "matching": len(rows),
         "examples": [
-            {**r, "langfuse_url": await ctx.langfuse.trace_url(r["trace_id"])}
-            for r in rows[-limit:]
+            {**r, "langfuse_url": await ctx.langfuse.trace_url(r["trace_id"])} for r in rows[-limit:]
         ],
     }
 

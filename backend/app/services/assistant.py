@@ -9,7 +9,7 @@
 import time
 import uuid
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from app.llm.types import LLMClient, Turn
@@ -45,15 +45,13 @@ def format_context(hits: list[Hit]) -> str:
 async def ask(question: str, kb: KnowledgeBase, lf: LangfuseAPI, llm: LLMClient) -> Answer:
     prompt = await lf.get_prompt(prompt_name(), label="production")
     if prompt is None:
-        raise LangfuseError(
-            f"No production version of prompt '{prompt_name()}'. Run the Langfuse seed step."
-        )
+        raise LangfuseError(f"No production version of prompt '{prompt_name()}'. Run the Langfuse seed step.")
     config = prompt.get("config") or {}
     namespace = config.get("namespace", "")
     hits = await kb.search(namespace, question, top_k=int(config.get("top_k", 3)))
     system = compile_prompt(prompt["prompt"], format_context(hits), question)
 
-    started = datetime.now(timezone.utc)
+    started = datetime.now(UTC)
     t0 = time.perf_counter()
     completion = await llm.complete(system=system, turns=[Turn(role="user", text=question)], max_tokens=2000)
     latency_ms = int((time.perf_counter() - t0) * 1000)
@@ -122,7 +120,7 @@ async def ask(question: str, kb: KnowledgeBase, lf: LangfuseAPI, llm: LLMClient)
 
 
 async def record_feedback(lf: LangfuseAPI, trace_id: str, helpful: bool) -> None:
-    now = iso(datetime.now(timezone.utc))
+    now = iso(datetime.now(UTC))
     await lf.ingest(
         [
             {

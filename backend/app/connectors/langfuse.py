@@ -50,9 +50,7 @@ class LangfuseConnector(Connector):
         if resp.status_code in (401, 403):
             return CheckResult(ok=False, message="Langfuse rejected the key pair.")
         if resp.status_code != 200:
-            return CheckResult(
-                ok=False, message=f"Unexpected response from Langfuse ({resp.status_code})."
-            )
+            return CheckResult(ok=False, message=f"Unexpected response from Langfuse ({resp.status_code}).")
 
         projects = resp.json().get("data", [])
         names = [p.get("name", p.get("id", "?")) for p in projects]

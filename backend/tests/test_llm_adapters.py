@@ -28,7 +28,10 @@ def test_anthropic_format_uses_tool_use_and_tool_result_blocks() -> None:
     client = AnthropicClient(api_key="k", model="claude-opus-5-5")
     messages = client._messages(TURNS)
     assert messages[1]["content"][1] == {
-        "type": "tool_use", "id": "c1", "name": "quality_trend", "input": {"days": 7}
+        "type": "tool_use",
+        "id": "c1",
+        "name": "quality_trend",
+        "input": {"days": 7},
     }
     assert messages[2]["role"] == "user"
     assert messages[2]["content"][0]["tool_use_id"] == "c1"

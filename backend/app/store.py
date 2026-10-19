@@ -3,7 +3,6 @@ import os
 import threading
 import time
 from pathlib import Path
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -12,8 +11,8 @@ from app.connectors.base import CheckResult, Connector
 
 class StoredConnection(BaseModel):
     values: dict[str, str] = Field(default_factory=dict)
-    last_check: Optional[CheckResult] = None
-    updated_at: Optional[float] = None
+    last_check: CheckResult | None = None
+    updated_at: float | None = None
 
 
 class ConnectionStore:
@@ -23,7 +22,7 @@ class ConnectionStore:
     per-request overrides. The API layer only ever returns masked values.
     """
 
-    def __init__(self, path: Path, env: Optional[dict[str, str]] = None) -> None:
+    def __init__(self, path: Path, env: dict[str, str] | None = None) -> None:
         self._path = path
         self._env = env or {}
         self._lock = threading.Lock()

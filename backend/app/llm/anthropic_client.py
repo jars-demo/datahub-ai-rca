@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 import anthropic
 
@@ -29,7 +29,7 @@ _STOP_REASONS: dict[str, StopReason] = {
 class AnthropicClient(LLMClient):
     provider = "anthropic"
 
-    def __init__(self, api_key: str, model: str, base_url: Optional[str] = None) -> None:
+    def __init__(self, api_key: str, model: str, base_url: str | None = None) -> None:
         self.model = model
         self._client = anthropic.AsyncAnthropic(
             api_key=api_key, base_url=base_url or None, timeout=120.0, max_retries=2
@@ -76,7 +76,7 @@ class AnthropicClient(LLMClient):
         self,
         system: str,
         turns: list[Turn],
-        tools: Optional[list[ToolSpec]] = None,
+        tools: list[ToolSpec] | None = None,
         max_tokens: int = 16000,
     ) -> Completion:
         params: dict[str, Any] = {
@@ -87,8 +87,7 @@ class AnthropicClient(LLMClient):
         }
         if tools:
             params["tools"] = [
-                {"name": t.name, "description": t.description, "input_schema": t.parameters}
-                for t in tools
+                {"name": t.name, "description": t.description, "input_schema": t.parameters} for t in tools
             ]
         if self._fallbacks:
             params["betas"] = [_FALLBACK_BETA]

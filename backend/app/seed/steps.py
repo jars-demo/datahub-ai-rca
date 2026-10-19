@@ -123,7 +123,10 @@ async def _run_ingestion(step: str, env: dict[str, str]) -> AsyncIterator[Log]:
         yield log(f"Ingestion environment not found at {python}. Run `make setup`.", "error")
         raise RuntimeError("ingestion environment missing")
     proc = await asyncio.create_subprocess_exec(
-        str(python), "-m", "rca_ingestion.run", step,
+        str(python),
+        "-m",
+        "rca_ingestion.run",
+        step,
         cwd=INGESTION_DIR,
         env=env,
         stdout=asyncio.subprocess.PIPE,

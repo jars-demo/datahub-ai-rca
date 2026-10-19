@@ -1,9 +1,9 @@
 """Command-line access to the same seeding the workshop UI runs.
 
-    python -m app.cli seed all            # pinecone, langfuse, datahub
-    python -m app.cli seed langfuse       # one step
-    python -m app.cli datahub-token       # create a DataHub token with datahub/datahub
-    python -m app.cli status
+python -m app.cli seed all            # pinecone, langfuse, datahub
+python -m app.cli seed langfuse       # one step
+python -m app.cli datahub-token       # create a DataHub token with datahub/datahub
+python -m app.cli status
 """
 
 import argparse
@@ -38,9 +38,7 @@ async def datahub_token(username: str, password: str) -> int:
     store = get_store()
     connector = CONNECTORS["datahub"]
     try:
-        token = await create_access_token(
-            store.resolve(connector, {})["ui_url"], username, password
-        )
+        token = await create_access_token(store.resolve(connector, {})["ui_url"], username, password)
     except DataHubError as e:
         print(e, file=sys.stderr)
         return 1

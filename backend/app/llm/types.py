@@ -3,7 +3,7 @@ adapter translates them to and from its own wire format."""
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 StopReason = Literal["end", "tool_use", "max_tokens", "refusal", "other"]
 
@@ -39,7 +39,7 @@ class Turn:
     tool_calls: list[ToolCall] = field(default_factory=list)
     tool_results: list[ToolResult] = field(default_factory=list)
     raw: Any = None
-    raw_provider: Optional[str] = None
+    raw_provider: str | None = None
 
 
 @dataclass(frozen=True)
@@ -84,7 +84,7 @@ class LLMClient(ABC):
         self,
         system: str,
         turns: list[Turn],
-        tools: Optional[list[ToolSpec]] = None,
+        tools: list[ToolSpec] | None = None,
         max_tokens: int = 16000,
     ) -> Completion: ...
 
