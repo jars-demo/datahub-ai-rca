@@ -193,7 +193,7 @@ async def create_access_token(ui_url: str, username: str, password: str) -> str:
                     "input": {
                         "type": "PERSONAL",
                         "actorUrn": f"urn:li:corpuser:{username}",
-                        "duration": "NO_EXPIRY",
+                        "duration": "THREE_MONTHS",
                         "name": "datahub-ai-rca",
                         "description": "Created by the datahub-ai-rca workshop app",
                     }
