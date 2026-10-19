@@ -17,18 +17,21 @@ class LangfuseConnector(Connector):
             default="https://cloud.langfuse.com",
             placeholder="https://cloud.langfuse.com",
             help="Use https://us.cloud.langfuse.com for the US region, or your self-hosted URL.",
+            env="LANGFUSE_HOST",
         ),
         FieldSpec(
             key="public_key",
             label="Public key",
             placeholder="pk-lf-…",
             help="Langfuse project → Settings → API Keys.",
+            env="LANGFUSE_PUBLIC_KEY",
         ),
         FieldSpec(
             key="secret_key",
             label="Secret key",
             kind="secret",
             placeholder="sk-lf-…",
+            env="LANGFUSE_SECRET_KEY",
         ),
     ]
 

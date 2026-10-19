@@ -1,0 +1,50 @@
+[
+  {
+    "id": "refunds",
+    "title": "Refund policy",
+    "updated": "2025-03-04",
+    "text": "Acme Cloud offers a full refund within 30 days of purchase for any paid plan. Request a refund from Billing > Invoices > Request refund. Refunds are returned to the original payment method within 5 to 10 business days. Annual plans cancelled after 30 days are refunded pro rata for the unused months."
+  },
+  {
+    "id": "pricing",
+    "title": "Plans and pricing",
+    "updated": "2025-01-15",
+    "text": "Acme Cloud has three plans. Starter costs $19 per user per month and includes 3 projects. Pro costs $49 per user per month and includes unlimited projects, SSO and priority support. Enterprise has custom pricing and adds a dedicated success manager, audit logs and a 99.99% uptime SLA. Annual billing saves 20%."
+  },
+  {
+    "id": "sso",
+    "title": "Single sign-on (SSO)",
+    "updated": "2025-02-10",
+    "text": "SAML and OIDC single sign-on are available on the Pro and Enterprise plans. Configure SSO in Settings > Security > Single sign-on. Supported identity providers include Okta, Microsoft Entra ID, Google Workspace and any SAML 2.0 provider. SCIM user provisioning is available on Enterprise."
+  },
+  {
+    "id": "rate-limits",
+    "title": "API rate limits",
+    "updated": "2025-04-01",
+    "text": "The Acme Cloud API allows 300 requests per minute on Starter, 1,000 requests per minute on Pro and 5,000 requests per minute on Enterprise. Requests over the limit receive HTTP 429 with a Retry-After header. Limits apply per workspace, not per API key."
+  },
+  {
+    "id": "sla",
+    "title": "Uptime and SLA",
+    "updated": "2025-01-15",
+    "text": "Acme Cloud targets 99.95% monthly uptime on Starter and Pro. Enterprise customers receive a contractual 99.99% uptime SLA with service credits of 10% of the monthly fee for each 0.1% below target. Live status is published at status.acme.example."
+  },
+  {
+    "id": "support-hours",
+    "title": "Support hours and channels",
+    "updated": "2025-02-20",
+    "text": "Pro and Enterprise customers get 24/7 support by chat and email with a 1 hour first-response target for urgent issues. Starter customers get email support Monday to Friday, 9:00 to 18:00 UTC, with a 1 business day response target."
+  },
+  {
+    "id": "data-export",
+    "title": "Exporting your data",
+    "updated": "2025-03-18",
+    "text": "Workspace owners can export all projects as JSON or CSV from Settings > Data > Export. Exports are prepared in the background and a download link valid for 7 days is emailed when ready. The API endpoint GET /v2/exports provides the same data programmatically."
+  },
+  {
+    "id": "account-deletion",
+    "title": "Deleting your account",
+    "updated": "2025-03-18",
+    "text": "Workspace owners can delete a workspace from Settings > Danger zone. Deleted data is permanently removed within 30 days, including backups, in line with GDPR. Download an export first; deleted workspaces cannot be restored."
+  }
+]

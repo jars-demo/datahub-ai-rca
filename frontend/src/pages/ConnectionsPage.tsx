@@ -14,7 +14,7 @@ export default function ConnectionsPage() {
         <div className="page">
             <PageHeader
                 title="Connections"
-                subtitle="Configure the systems used for analysis. Credentials are stored server-side and are never returned to the browser."
+                subtitle="Bring your own accounts. Values can come from .env or be entered here; secrets stay on the backend and are never sent back to the browser."
                 actions={
                     total > 0 && (
                         <div className="progress">

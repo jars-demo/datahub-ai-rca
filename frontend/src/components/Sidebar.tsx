@@ -1,43 +1,50 @@
-import { House, MagnifyingGlass, Plugs, TreeStructure } from '@phosphor-icons/react';
+import {
+    BookOpen,
+    ChatCircleText,
+    GraduationCap,
+    House,
+    Info,
+    MagnifyingGlass,
+    Plugs,
+    TreeStructure,
+} from '@phosphor-icons/react';
 import type { Icon } from '@phosphor-icons/react';
 import { NavLink } from 'react-router-dom';
 
-type NavItem = {
-    to: string;
-    label: string;
-    icon: Icon;
-    soon?: boolean;
-};
+import { useAbout } from '../hooks/useStatus';
 
-const WORKSPACE: NavItem[] = [
-    { to: '/', label: 'Overview', icon: House },
-    { to: '/investigate', label: 'Investigate', icon: MagnifyingGlass, soon: true },
-    { to: '/lineage', label: 'AI lineage', icon: TreeStructure, soon: true },
+type NavItem = { to: string; label: string; icon: Icon };
+
+const GROUPS: { title: string; items: NavItem[] }[] = [
+    {
+        title: 'Workshop',
+        items: [
+            { to: '/', label: 'Home', icon: House },
+            { to: '/workshop', label: 'Workshop', icon: GraduationCap },
+            { to: '/concepts', label: 'Concepts', icon: BookOpen },
+        ],
+    },
+    {
+        title: 'App',
+        items: [
+            { to: '/assistant', label: 'Assistant', icon: ChatCircleText },
+            { to: '/investigate', label: 'Investigate', icon: MagnifyingGlass },
+            { to: '/lineage', label: 'AI lineage', icon: TreeStructure },
+        ],
+    },
+    {
+        title: 'Settings',
+        items: [
+            { to: '/connections', label: 'Connections', icon: Plugs },
+            { to: '/about', label: 'About this build', icon: Info },
+        ],
+    },
 ];
 
-const SETTINGS: NavItem[] = [{ to: '/connections', label: 'Connections', icon: Plugs }];
-
-function NavGroup({ title, items }: { title: string; items: NavItem[] }) {
-    return (
-        <>
-            <div className="nav-section">{title}</div>
-            {items.map(({ to, label, icon: ItemIcon, soon }) => (
-                <NavLink
-                    key={to}
-                    to={to}
-                    end={to === '/'}
-                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-                >
-                    <ItemIcon size={18} weight="bold" />
-                    {label}
-                    {soon && <span className="soon">Soon</span>}
-                </NavLink>
-            ))}
-        </>
-    );
-}
-
 export default function Sidebar() {
+    const about = useAbout();
+    const server = about?.datahub_server;
+
     return (
         <aside className="sidebar">
             <div className="brand">
@@ -48,14 +55,33 @@ export default function Sidebar() {
                 </div>
             </div>
             <nav className="nav">
-                <NavGroup title="Workspace" items={WORKSPACE} />
-                <NavGroup title="Settings" items={SETTINGS} />
+                {GROUPS.map((group) => (
+                    <div key={group.title} className="nav-group">
+                        <div className="nav-section">{group.title}</div>
+                        {group.items.map(({ to, label, icon: ItemIcon }) => (
+                            <NavLink
+                                key={to}
+                                to={to}
+                                end={to === '/'}
+                                className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+                            >
+                                <ItemIcon size={18} weight="bold" />
+                                {label}
+                            </NavLink>
+                        ))}
+                    </div>
+                ))}
             </nav>
-            <div className="sidebar-footer">
-                <a href="/docs" target="_blank" rel="noreferrer">
-                    API reference
-                </a>
-            </div>
+            <NavLink to="/about" className="build-hint" title="DataHub server and connector provenance">
+                <span className={server?.reachable ? 'dot ok' : 'dot'} />
+                {server?.reachable ? (
+                    <span>
+                        DataHub {server.version} · <code>{server.commit?.slice(0, 7)}</code>
+                    </span>
+                ) : (
+                    <span>DataHub not reachable</span>
+                )}
+            </NavLink>
         </aside>
     );
 }

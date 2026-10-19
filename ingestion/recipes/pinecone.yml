@@ -1,0 +1,16 @@
+# Ingest the workshop's Pinecone index with DataHub's Pinecone source.
+# Run: datahub ingest -c recipes/pinecone.yml   (or: python -m rca_ingestion.run pinecone)
+source:
+  type: pinecone
+  config:
+    api_key: ${PINECONE_API_KEY}
+    index_pattern:
+      allow:
+        - "^acme-support-kb$"
+    enable_schema_inference: true
+
+sink:
+  type: datahub-rest
+  config:
+    server: ${DATAHUB_GMS_URL}
+    token: ${DATAHUB_TOKEN}

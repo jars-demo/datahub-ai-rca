@@ -23,14 +23,17 @@ class PineconeConnector(Connector):
             label="API key",
             kind="secret",
             placeholder="pcsk_…",
-            help="Pinecone console → API Keys.",
+            help="Pinecone console → API Keys. The free Starter plan is enough.",
+            env="PINECONE_API_KEY",
         ),
         FieldSpec(
             key="index_name",
             label="Index name",
             required=False,
-            placeholder="e.g. support-docs",
-            help="Optional. If set, the test also checks this index and its vector count.",
+            default="acme-support-kb",
+            placeholder="acme-support-kb",
+            help="The workshop creates and seeds this index. The test also reports its vector count.",
+            env="PINECONE_INDEX",
         ),
     ]
 
@@ -61,8 +64,8 @@ class PineconeConnector(Connector):
             stats = pc.Index(host=desc.host).describe_index_stats()
         except NotFoundException:
             return CheckResult(
-                ok=False,
-                message=f"API key works, but index '{index_name}' was not found.",
+                ok=True,
+                message=f"Connected. Index '{index_name}' does not exist yet; seeding creates it.",
                 details=details,
             )
         except PineconeApiException as e:

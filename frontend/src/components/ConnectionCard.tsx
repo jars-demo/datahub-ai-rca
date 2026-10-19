@@ -1,4 +1,4 @@
-import { ArrowSquareOut, CircleNotch, Trash } from '@phosphor-icons/react';
+import { ArrowSquareOut, CircleNotch, Key, Trash } from '@phosphor-icons/react';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 
@@ -15,7 +15,7 @@ type Props = {
     onChanged: () => Promise<void>;
 };
 
-type Busy = 'save' | 'test' | 'remove' | null;
+type Busy = 'save' | 'test' | 'remove' | 'token' | null;
 
 export default function ConnectionCard({ connection, onChanged }: Props) {
     const [values, setValues] = useState<Record<string, string>>(connection.values);
@@ -52,16 +52,20 @@ export default function ConnectionCard({ connection, onChanged }: Props) {
             setResult(await api.testConnection(connection.id, values));
         });
 
+    const createToken = () =>
+        run('token', async () => {
+            const updated = await api.createDataHubToken('datahub', 'datahub');
+            setValues(updated.values);
+            setResult(updated.last_check);
+            await onChanged();
+        });
+
     const remove = () => {
-        if (!window.confirm(`Remove the saved ${connection.name} settings?`)) return;
+        if (!window.confirm(`Clear the ${connection.name} settings saved in the UI? Values from .env stay.`)) return;
         void run('remove', async () => {
             await api.deleteConnection(connection.id);
             setResult(null);
             await onChanged();
-            const defaults = Object.fromEntries(
-                connection.fields.map((f) => [f.key, f.kind === 'secret' ? '' : (f.default ?? '')]),
-            );
-            setValues(defaults);
         });
     };
 
@@ -87,9 +91,16 @@ export default function ConnectionCard({ connection, onChanged }: Props) {
                         field={field}
                         value={values[field.key] ?? ''}
                         secretSaved={connection.secrets_set.includes(field.key)}
+                        fromEnv={connection.from_env.includes(field.key)}
                         onChange={(value) => setValues((v) => ({ ...v, [field.key]: value }))}
                     />
                 ))}
+                {connection.id === 'datahub' && (
+                    <button type="button" className="btn btn-secondary btn-block" onClick={createToken} disabled={busy !== null}>
+                        {busy === 'token' ? <CircleNotch size={16} className="spin" /> : <Key size={16} />}
+                        Create token with the default login (datahub / datahub)
+                    </button>
+                )}
             </div>
 
             {error && <div className="check fail check-message">{error}</div>}
@@ -99,17 +110,15 @@ export default function ConnectionCard({ connection, onChanged }: Props) {
                 <a className="docs" href={connection.docs_url} target="_blank" rel="noreferrer">
                     Documentation <ArrowSquareOut size={14} />
                 </a>
-                {connection.configured && (
-                    <button
-                        type="button"
-                        className="btn btn-ghost"
-                        onClick={remove}
-                        disabled={busy !== null}
-                        aria-label={`Remove ${connection.name} settings`}
-                    >
-                        <Trash size={16} />
-                    </button>
-                )}
+                <button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={remove}
+                    disabled={busy !== null}
+                    aria-label={`Clear ${connection.name} settings`}
+                >
+                    <Trash size={16} />
+                </button>
                 <button type="button" className="btn btn-secondary" onClick={testOnly} disabled={busy !== null}>
                     {busy === 'test' && <CircleNotch size={16} className="spin" />}
                     Test

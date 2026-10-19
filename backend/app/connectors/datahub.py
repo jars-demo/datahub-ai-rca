@@ -1,8 +1,7 @@
-import httpx
-
 from app.connectors.base import CheckResult, Connector, DetailValue, FieldSpec
+from app.services.datahub_api import DataHubAPI, DataHubError
 
-_WHOAMI = "{ me { corpUser { username } } }"
+_WHOAMI = "query whoami { me { corpUser { username } } }"
 
 
 class DataHubConnector(Connector):
@@ -18,53 +17,47 @@ class DataHubConnector(Connector):
             kind="url",
             default="http://localhost:8080",
             placeholder="http://localhost:8080",
-            help="The DataHub metadata service, not the UI (port 9002).",
+            help="The DataHub metadata service (GMS), not the UI.",
+            env="DATAHUB_GMS_URL",
+        ),
+        FieldSpec(
+            key="ui_url",
+            label="UI URL",
+            kind="url",
+            default="http://localhost:9002",
+            placeholder="http://localhost:9002",
+            help="Used for links into DataHub and to create a token with your login.",
+            env="DATAHUB_UI_URL",
         ),
         FieldSpec(
             key="token",
             label="Personal access token",
             kind="secret",
             placeholder="eyJhbGciOi…",
-            help="DataHub UI → Settings → Access Tokens.",
+            help="DataHub → Settings → Access Tokens, or use “Create token” below.",
+            env="DATAHUB_TOKEN",
         ),
     ]
 
     async def _test(self, values: dict[str, str]) -> CheckResult:
-        base = values["gms_url"].rstrip("/")
-        headers = {"Authorization": f"Bearer {values['token']}"}
+        api = DataHubAPI(values["gms_url"], values["token"], values.get("ui_url", ""))
         try:
-            async with httpx.AsyncClient(timeout=15.0) as client:
-                config = await client.get(f"{base}/config")
-                whoami = await client.post(
-                    f"{base}/api/graphql", json={"query": _WHOAMI}, headers=headers
-                )
-        except httpx.HTTPError as e:
-            return CheckResult(ok=False, message=f"Could not reach {base}: {e}")
-
-        if config.status_code != 200:
-            return CheckResult(
-                ok=False, message=f"{base} doesn't look like DataHub GMS ({config.status_code})."
-            )
-        version = (
-            config.json().get("versions", {}).get("acryldata/datahub", {}).get("version", "unknown")
-        )
-        details: dict[str, DetailValue] = {"version": version}
-
-        if whoami.status_code in (401, 403):
-            return CheckResult(
-                ok=False,
-                message="DataHub is reachable, but the token was rejected.",
-                details=details,
-            )
-        if whoami.status_code != 200:
-            return CheckResult(
-                ok=False, message=f"GraphQL error ({whoami.status_code}).", details=details
-            )
-
-        user = ((whoami.json().get("data") or {}).get("me") or {}).get("corpUser") or {}
-        details["user"] = user.get("username", "unknown")
+            config = await api.server_config()
+        except DataHubError as e:
+            return CheckResult(ok=False, message=str(e))
+        version_info = config.get("versions", {}).get("acryldata/datahub", {})
+        details: dict[str, DetailValue] = {
+            "version": version_info.get("version", "unknown"),
+            "commit": str(version_info.get("commit", ""))[:10],
+        }
+        try:
+            data = await api.graphql(_WHOAMI, {})
+        except DataHubError as e:
+            return CheckResult(ok=False, message=f"DataHub is reachable, but: {e}", details=details)
+        user = ((data.get("me") or {}).get("corpUser") or {}).get("username", "unknown")
+        details["user"] = user
         return CheckResult(
             ok=True,
-            message=f"Connected to DataHub {version} as {details['user']}.",
+            message=f"Connected to DataHub {details['version']} as {user}.",
             details=details,
         )

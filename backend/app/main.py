@@ -1,15 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import connections
+from app.routers import assistant, connections, investigate, lineage, seed, system
 from app.settings import get_settings
 
 app = FastAPI(
     title="DataHub AI Root Cause",
-    version="0.1.0",
+    version="0.2.0",
     description=(
-        "Backend for the AI root-cause demo. Connects Pinecone (retrieval), "
-        "Langfuse (LLM observability), DataHub (metadata graph) and Claude."
+        "Workshop backend: a RAG support assistant on Pinecone and Langfuse, its metadata in "
+        "DataHub, and an agent that traces quality regressions to their source. Works with any "
+        "LLM provider."
     ),
 )
 
@@ -20,9 +21,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(connections.router)
-
-
-@app.get("/api/health", tags=["meta"])
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+for module in (system, connections, seed, assistant, investigate, lineage):
+    app.include_router(module.router)

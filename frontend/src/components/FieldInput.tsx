@@ -8,10 +8,11 @@ type Props = {
     field: FieldSpec;
     value: string;
     secretSaved: boolean;
+    fromEnv: boolean;
     onChange: (value: string) => void;
 };
 
-export default function FieldInput({ connectionId, field, value, secretSaved, onChange }: Props) {
+export default function FieldInput({ connectionId, field, value, secretSaved, fromEnv, onChange }: Props) {
     const [revealed, setRevealed] = useState(false);
     const isSecret = field.kind === 'secret';
     const inputId = `${connectionId}-${field.key}`;
@@ -22,33 +23,48 @@ export default function FieldInput({ connectionId, field, value, secretSaved, on
             <label htmlFor={inputId}>
                 {field.label}
                 {!field.required && <span className="optional">Optional</span>}
-            </label>
-            <div className="input-wrap">
-                <input
-                    id={inputId}
-                    className={isSecret ? 'input has-toggle' : 'input'}
-                    type={isSecret && !revealed ? 'password' : field.kind === 'url' ? 'url' : 'text'}
-                    value={value}
-                    placeholder={placeholder}
-                    autoComplete="off"
-                    spellCheck={false}
-                    onChange={(e) => onChange(e.target.value)}
-                />
-                {isSecret && (
-                    <button
-                        type="button"
-                        className="input-toggle"
-                        onClick={() => setRevealed((r) => !r)}
-                        aria-label={revealed ? `Hide ${field.label}` : `Show ${field.label}`}
-                    >
-                        {revealed ? <EyeSlash size={18} /> : <Eye size={18} />}
-                    </button>
+                {fromEnv && (
+                    <span className="env-badge" title={`Set by ${field.env} in .env`}>
+                        .env
+                    </span>
                 )}
-            </div>
+            </label>
+            {field.kind === 'select' ? (
+                <select id={inputId} className="input" value={value} onChange={(e) => onChange(e.target.value)}>
+                    {field.options.map((o) => (
+                        <option key={o.value} value={o.value}>
+                            {o.label}
+                        </option>
+                    ))}
+                </select>
+            ) : (
+                <div className="input-wrap">
+                    <input
+                        id={inputId}
+                        className={isSecret ? 'input has-toggle' : 'input'}
+                        type={isSecret && !revealed ? 'password' : field.kind === 'url' ? 'url' : 'text'}
+                        value={value}
+                        placeholder={placeholder}
+                        autoComplete="off"
+                        spellCheck={false}
+                        onChange={(e) => onChange(e.target.value)}
+                    />
+                    {isSecret && (
+                        <button
+                            type="button"
+                            className="input-toggle"
+                            onClick={() => setRevealed((r) => !r)}
+                            aria-label={revealed ? `Hide ${field.label}` : `Show ${field.label}`}
+                        >
+                            {revealed ? <EyeSlash size={18} /> : <Eye size={18} />}
+                        </button>
+                    )}
+                </div>
+            )}
             {isSecret && secretSaved && !value ? (
                 <div className="field-help saved">
                     <CheckCircle size={14} weight="fill" />
-                    Saved. Leave blank to keep the current value.
+                    {fromEnv ? `Set in .env (${field.env}).` : 'Saved. Leave blank to keep the current value.'}
                 </div>
             ) : (
                 field.help && <div className="field-help">{field.help}</div>

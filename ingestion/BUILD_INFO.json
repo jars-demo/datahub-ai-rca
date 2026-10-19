@@ -1,0 +1,16 @@
+{
+  "acryl_datahub": "1.7.0.14",
+  "pinecone_source": {
+    "pr": 16472,
+    "status": "merged",
+    "url": "https://github.com/datahub-project/datahub/pull/16472",
+    "shipped_in": "acryl-datahub 1.7.0.14 (pip extra: pinecone)"
+  },
+  "langfuse_source": {
+    "pr": 19923,
+    "status": "open",
+    "url": "https://github.com/datahub-project/datahub/pull/19923",
+    "commit": "1b33f32e27",
+    "shipped_in": "bundled in ingestion/rca_ingestion/langfuse_source"
+  }
+}

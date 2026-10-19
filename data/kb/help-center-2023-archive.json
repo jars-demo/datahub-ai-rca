@@ -1,0 +1,50 @@
+[
+  {
+    "id": "refunds",
+    "title": "Refund policy",
+    "updated": "2023-05-02",
+    "text": "Acme Cloud offers a refund within 14 days of purchase for monthly plans only. Annual plans are non-refundable. Contact billing@acme.example to request a refund; refunds are issued as account credit."
+  },
+  {
+    "id": "pricing",
+    "title": "Plans and pricing",
+    "updated": "2023-01-10",
+    "text": "Acme Cloud has three plans. Starter costs $12 per user per month and includes 1 project. Pro costs $39 per user per month and includes 10 projects. Enterprise has custom pricing and adds SSO and audit logs."
+  },
+  {
+    "id": "sso",
+    "title": "Single sign-on (SSO)",
+    "updated": "2023-03-14",
+    "text": "SAML single sign-on is available on the Enterprise plan only. Contact your account manager to enable it. Okta is the only supported identity provider."
+  },
+  {
+    "id": "rate-limits",
+    "title": "API rate limits",
+    "updated": "2023-06-01",
+    "text": "The Acme Cloud API allows 60 requests per minute on Starter and 300 requests per minute on Pro and Enterprise. Limits apply per API key."
+  },
+  {
+    "id": "sla",
+    "title": "Uptime and SLA",
+    "updated": "2023-01-10",
+    "text": "Acme Cloud targets 99.9% monthly uptime on all plans. There is no contractual SLA and no service credits."
+  },
+  {
+    "id": "support-hours",
+    "title": "Support hours and channels",
+    "updated": "2023-02-01",
+    "text": "Support is available by email Monday to Friday, 9:00 to 17:00 US Eastern time, for all plans. Response target is 2 business days."
+  },
+  {
+    "id": "data-export",
+    "title": "Exporting your data",
+    "updated": "2023-04-11",
+    "text": "Workspace owners can export all projects as JSON or CSV from Settings > Data > Export. Exports are prepared in the background and a download link valid for 7 days is emailed when ready."
+  },
+  {
+    "id": "account-deletion",
+    "title": "Deleting your account",
+    "updated": "2023-04-11",
+    "text": "To delete a workspace, email support@acme.example. Data is removed within 90 days."
+  }
+]

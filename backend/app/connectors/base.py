@@ -7,14 +7,21 @@ from pydantic import BaseModel, Field
 DetailValue = Union[str, int, float, bool, list[str]]
 
 
+class FieldOption(BaseModel):
+    value: str
+    label: str
+
+
 class FieldSpec(BaseModel):
     key: str
     label: str
-    kind: Literal["text", "url", "secret"] = "text"
+    kind: Literal["text", "url", "secret", "select"] = "text"
     required: bool = True
     placeholder: str = ""
     help: str = ""
     default: Optional[str] = None
+    env: Optional[str] = Field(default=None, description="Environment variable that can set it.")
+    options: list[FieldOption] = Field(default_factory=list)
 
 
 class CheckResult(BaseModel):
@@ -44,8 +51,13 @@ class Connector(ABC):
     def field_keys(self) -> set[str]:
         return {f.key for f in self.fields}
 
+    def required_keys(self, values: dict[str, str]) -> set[str]:
+        """Override when a field is only required for some values of another field."""
+        return {f.key for f in self.fields if f.required}
+
     def missing_required(self, values: dict[str, str]) -> list[str]:
-        return [f.label for f in self.fields if f.required and not values.get(f.key)]
+        required = self.required_keys(values)
+        return [f.label for f in self.fields if f.key in required and not values.get(f.key)]
 
     async def test(self, values: dict[str, str]) -> CheckResult:
         missing = self.missing_required(values)

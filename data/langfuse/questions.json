@@ -1,0 +1,74 @@
+[
+  {
+    "doc": "refunds",
+    "question": "Can I get a refund on my annual plan after two months?",
+    "current": "Yes. Annual plans cancelled after the first 30 days are refunded pro rata for the unused months (Refund policy).",
+    "archive": "Unfortunately annual plans are non-refundable (Refund policy)."
+  },
+  {
+    "doc": "refunds",
+    "question": "How many days do I have to ask for a refund?",
+    "current": "You can get a full refund within 30 days of purchase on any paid plan (Refund policy).",
+    "archive": "You have 14 days from purchase, and only for monthly plans (Refund policy)."
+  },
+  {
+    "doc": "pricing",
+    "question": "How much does the Pro plan cost?",
+    "current": "Pro is $49 per user per month, or 20% less with annual billing (Plans and pricing).",
+    "archive": "Pro is $39 per user per month and includes 10 projects (Plans and pricing)."
+  },
+  {
+    "doc": "pricing",
+    "question": "What is the cheapest plan and what does it include?",
+    "current": "Starter at $19 per user per month, with 3 projects (Plans and pricing).",
+    "archive": "Starter at $12 per user per month, with 1 project (Plans and pricing)."
+  },
+  {
+    "doc": "sso",
+    "question": "Do I need Enterprise to use SSO?",
+    "current": "No. SAML and OIDC SSO are included on Pro and Enterprise (Single sign-on).",
+    "archive": "Yes, SSO is only available on the Enterprise plan (Single sign-on)."
+  },
+  {
+    "doc": "sso",
+    "question": "Can we use Microsoft Entra ID for single sign-on?",
+    "current": "Yes. Entra ID is supported, along with Okta, Google Workspace and any SAML 2.0 provider (Single sign-on).",
+    "archive": "No, Okta is the only supported identity provider (Single sign-on)."
+  },
+  {
+    "doc": "rate-limits",
+    "question": "What is the API rate limit on the Pro plan?",
+    "current": "1,000 requests per minute per workspace on Pro (API rate limits).",
+    "archive": "300 requests per minute per API key on Pro (API rate limits)."
+  },
+  {
+    "doc": "sla",
+    "question": "Do you offer an uptime SLA with service credits?",
+    "current": "Enterprise has a contractual 99.99% SLA with service credits; Starter and Pro target 99.95% (Uptime and SLA).",
+    "archive": "There is no contractual SLA or service credits; the target is 99.9% (Uptime and SLA)."
+  },
+  {
+    "doc": "support-hours",
+    "question": "Is support available on weekends for Pro customers?",
+    "current": "Yes. Pro and Enterprise have 24/7 chat and email support (Support hours and channels).",
+    "archive": "No, support is available Monday to Friday, 9:00 to 17:00 US Eastern (Support hours and channels)."
+  },
+  {
+    "doc": "account-deletion",
+    "question": "How long until my data is deleted after I close my workspace?",
+    "current": "Data is permanently removed within 30 days, including backups (Deleting your account).",
+    "archive": "Data is removed within 90 days after you email support (Deleting your account)."
+  },
+  {
+    "doc": "data-export",
+    "question": "How do I export all my projects?",
+    "current": "Go to Settings > Data > Export; a download link valid for 7 days is emailed when ready (Exporting your data).",
+    "archive": "Go to Settings > Data > Export; a download link valid for 7 days is emailed when ready (Exporting your data)."
+  },
+  {
+    "doc": "data-export",
+    "question": "Is there an API for data exports?",
+    "current": "Yes, GET /v2/exports returns the same data as the export screen (Exporting your data).",
+    "archive": "The help center describes exporting from Settings > Data > Export; I couldn't find an export API (Exporting your data)."
+  }
+]

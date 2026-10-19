@@ -1,0 +1,53 @@
+{
+  "company": "Acme Cloud",
+  "pinecone": {
+    "index": "acme-support-kb",
+    "embed_model": "llama-text-embed-v2",
+    "cloud": "aws",
+    "region": "us-east-1",
+    "namespaces": {
+      "current": "help-center-2025",
+      "archive": "help-center-2023-archive"
+    }
+  },
+  "langfuse": {
+    "prompt_name": "support-answer",
+    "trace_name": "support-chat",
+    "quality_score": "correctness",
+    "scores": ["correctness", "helpfulness"],
+    "seed_days": 7,
+    "regression_days_ago": 3,
+    "traces_per_day": 10
+  },
+  "datahub": {
+    "domain": "Customer Support AI",
+    "sources": {
+      "current": {
+        "platform": "s3",
+        "name": "acme-content/help-center/2025",
+        "display_name": "Help Center (2025)",
+        "description": "Published help-center articles for Acme Cloud. Source of truth for pricing, refunds, SSO, limits and support policies. Synced nightly.",
+        "owner_group": "support-content",
+        "namespace": "current",
+        "tags": ["customer-facing", "source-of-truth"]
+      },
+      "archive": {
+        "platform": "s3",
+        "name": "acme-content/help-center/2023-archive",
+        "display_name": "Help Center Archive (2023)",
+        "description": "Frozen export of the 2023 help center, kept for audit purposes only. Pricing, refund and SSO policies in this dataset are out of date.",
+        "owner_group": "support-content",
+        "namespace": "archive",
+        "tags": ["archive"],
+        "deprecation_note": "Superseded by acme-content/help-center/2025. Policies in this archive are outdated and must not be used to answer customers."
+      }
+    },
+    "groups": {
+      "support-content": "Support Content",
+      "kb-platform": "Knowledge Platform",
+      "ai-assistants": "AI Assistants"
+    },
+    "pinecone_owner_group": "kb-platform",
+    "prompt_owner_group": "ai-assistants"
+  }
+}
