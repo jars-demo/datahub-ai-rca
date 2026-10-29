@@ -132,3 +132,8 @@ make check           # tests, lint, frontend build (what CI runs)
 
 This is a community workshop built on DataHub, not an official DataHub project. All company
 names and data in the scenario are fictional.
+
+## License
+
+[Apache License 2.0](LICENSE), the same as DataHub. The bundled Langfuse source comes from
+DataHub; see [NOTICE](NOTICE).

@@ -1,0 +1,11 @@
+datahub-ai-rca
+Copyright 2026 Jishanahmed AR Shaikh
+
+This product includes the DataHub Langfuse ingestion source from
+https://github.com/datahub-project/datahub/pull/19923, in
+ingestion/rca_ingestion/langfuse_source/. The changes made to it are listed in
+that folder's README.
+
+DataHub (https://github.com/datahub-project/datahub)
+(c) 2015 LinkedIn Corp. All rights reserved.
+Licensed under the Apache License, Version 2.0.
