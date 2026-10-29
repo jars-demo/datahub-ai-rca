@@ -9,3 +9,10 @@ that folder's README.
 DataHub (https://github.com/datahub-project/datahub)
 (c) 2015 LinkedIn Corp. All rights reserved.
 Licensed under the Apache License, Version 2.0.
+
+Third-party trademarks
+----------------------
+frontend/public/logos/ contains the logos of DataHub, Langfuse and Pinecone.
+They are trademarks of their owners. They are used only to identify the
+systems this workshop connects to. This workshop is not an official project
+of, and is not endorsed by, any of them.
