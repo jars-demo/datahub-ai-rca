@@ -143,7 +143,7 @@ export const STEPS: WorkshopStep[] = [
                         index into a container and each namespace into a dataset with an inferred schema.
                     </li>
                     <li>
-                        The <a href={LANGFUSE_PR}>Langfuse source</a> (in review, bundled in this repo) turns prompt
+                        The <a href={LANGFUSE_PR}>Langfuse source</a> (merged, bundled in this repo until it is released) turns prompt
                         versions into versioned datasets, traces and generations into runs linked to the prompt version
                         they used, and scores into metrics.
                     </li>

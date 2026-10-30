@@ -16,7 +16,7 @@ graph from source documents to production traces, and watch an agent, running on
 choose**, find the cause, the owner and the fix.
 
 - **One realistic incident**, seeded into your own Pinecone, Langfuse and DataHub
-- **Two connectors I contributed to DataHub itself**: Pinecone ([#16472](https://github.com/datahub-project/datahub/pull/16472), merged) and Langfuse ([#19923](https://github.com/datahub-project/datahub/pull/19923), in review, bundled here until it is released). They belong to DataHub, so every DataHub user can use them; this workshop shows what they make possible together
+- **Two connectors I contributed to DataHub itself**: Pinecone ([#16472](https://github.com/datahub-project/datahub/pull/16472), merged) and Langfuse ([#19923](https://github.com/datahub-project/datahub/pull/19923), merged, bundled here until it is released). They belong to DataHub, so every DataHub user can use them; this workshop shows what they make possible together
 - **Bring your own model**: Anthropic, OpenAI, Gemini, Groq, OpenRouter, Mistral, Together, DeepSeek, Ollama or any OpenAI-compatible endpoint
 - **60 minutes**, for data and AI engineers
 
