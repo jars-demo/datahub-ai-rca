@@ -85,10 +85,10 @@ export default function HomePage() {
                             <div>
                                 <div className="table-name">Langfuse source</div>
                                 <div className="table-meta">
-                                    Prompt versions, traces, generations and scores. In review, bundled here.
+                                    Prompt versions, traces, generations and scores. Merged, bundled here until it is released.
                                 </div>
                             </div>
-                            <a className="pr-link open" href={LANGFUSE_PR} target="_blank" rel="noreferrer">
+                            <a className="pr-link merged" href={LANGFUSE_PR} target="_blank" rel="noreferrer">
                                 <GitPullRequest size={14} /> #19923
                             </a>
                         </div>

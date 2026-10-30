@@ -64,7 +64,7 @@ export default function AboutPage() {
                     <dd>
                         {about && (
                             <>
-                                <a className="pr-link open" href={about.langfuse_source.url} target="_blank" rel="noreferrer">
+                                <a className="pr-link merged" href={about.langfuse_source.url} target="_blank" rel="noreferrer">
                                     <GitPullRequest size={14} /> #{about.langfuse_source.pr} · {about.langfuse_source.status}
                                 </a>{' '}
                                 {about.langfuse_source.shipped_in} at <code>{about.langfuse_source.commit}</code>

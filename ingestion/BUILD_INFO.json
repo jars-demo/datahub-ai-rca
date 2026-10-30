@@ -8,7 +8,7 @@
   },
   "langfuse_source": {
     "pr": 19923,
-    "status": "open",
+    "status": "merged",
     "url": "https://github.com/datahub-project/datahub/pull/19923",
     "commit": "1b33f32e27",
     "shipped_in": "bundled in ingestion/rca_ingestion/langfuse_source"
